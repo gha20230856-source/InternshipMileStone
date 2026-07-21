@@ -1,0 +1,41 @@
+package com.example.InternshipMileStone.model;
+
+import jakarta.persistence.*;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
+
+@Component
+@Scope("prototype")
+@Entity
+@Table(name= "user")
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "BIGSERIAL" ,name = "id")
+    private long id;
+
+    @Column(name="name",unique = true,nullable = false,length = 50)
+    private String username;
+
+    @Column(name="email",unique = true,nullable = false,length = 100)
+    private String email;
+
+    @Column(name="password",nullable = false)
+    private String password;
+
+    @ManyToOne
+    private Role role;
+
+    @Column(name="enabled",columnDefinition = "boolean default true")
+    private Boolean enabled;
+
+    @Column(name = "created_at", insertable = false, updatable = false, nullable = false,
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ")
+    private Date createdAt;
+
+
+
+}
