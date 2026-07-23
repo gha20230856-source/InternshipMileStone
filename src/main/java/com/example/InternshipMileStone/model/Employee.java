@@ -60,6 +60,7 @@ public class Employee {
     private User user;
 
     @ManyToOne
+    @JoinColumn(name = "department_id")
     private Department department;
 
 
