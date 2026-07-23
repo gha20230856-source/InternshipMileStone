@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @Data
 @NoArgsConstructor
@@ -22,5 +24,11 @@ public class Role {
 
     @Column(name = "name",unique = true,length = 30)
     private String name;
+
+
+    //TODO When I remove a role do I remove everyone with that role?
+    @OneToMany(mappedBy = "role")
+    private List<User> user;
+
 
 }

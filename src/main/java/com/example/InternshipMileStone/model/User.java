@@ -37,6 +37,8 @@ public class User {
     @Column(name="password",nullable = false)
     private String password;
 
+
+    //TODO change fetching type of @ManyToOne to Lazy ( default eager)
     @ManyToOne
     private Role role;
 

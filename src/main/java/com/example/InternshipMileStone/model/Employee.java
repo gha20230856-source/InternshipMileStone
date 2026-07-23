@@ -31,6 +31,8 @@ public class Employee {
     @Column(name="last_name", length = 50,nullable = false)
     private String lastName;
 
+
+    //TODO Add email Validation as  a constraint
     @Column(name="email",length = 100,unique = true,nullable = false)
     private String email;
 
