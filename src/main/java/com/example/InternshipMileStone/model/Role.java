@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "BIGSERIAL" ,name = "id")
+    @Column(name = "id")
     private long id;
 
     @Column(name = "name",unique = true,length = 30)

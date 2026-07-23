@@ -1,20 +1,31 @@
 package com.example.InternshipMileStone.model;
 
 import jakarta.persistence.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DialectOverride;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Component
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Scope("prototype")
 @Entity
 @Table(name= "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "BIGSERIAL" ,name = "id")
+    @Column(name = "id")
     private long id;
 
     @Column(name="name",unique = true,nullable = false,length = 50)
@@ -29,12 +40,13 @@ public class User {
     @ManyToOne
     private Role role;
 
-    @Column(name="enabled",columnDefinition = "boolean default true")
+    @Column(name="enabled")
+    @ColumnDefault("True")
     private Boolean enabled;
 
-    @Column(name = "created_at", insertable = false, updatable = false, nullable = false,
-            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ")
-    private Date createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false, nullable = false)
+    private LocalDateTime createdAt;
 
 
 
