@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @Data
 @NoArgsConstructor
@@ -29,6 +31,12 @@ public class Department {
     @OneToOne(optional = true)
     @JoinColumn(name = "department_head_id")
     private Employee departmentHead;
+
+    //TODO add one TO many
+    @OneToMany(mappedBy = "department",fetch = FetchType.LAZY)
+    private List<Employee> employeeList;
+
+
 
 
 

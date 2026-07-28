@@ -26,8 +26,6 @@ public class Payroll {
     @Column(name = "id")
     private long id;
 
-    @ManyToOne(optional = false)
-    private Employee employee;
 
     @Column(nullable = false,check = @CheckConstraint(name = "MonthRangeCheck" , constraint = "month >=1 AND month <=12 "))
     private int month ;
@@ -49,6 +47,9 @@ public class Payroll {
     @Column(name = "generated_on")
     private LocalDateTime generatedOn;
 
+
+    @ManyToOne(optional = false)
+    private Employee employee;
 
 
 

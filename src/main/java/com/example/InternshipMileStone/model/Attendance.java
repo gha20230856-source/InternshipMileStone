@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Component
 @Data
@@ -31,7 +30,7 @@ public class Attendance {
 
 
     @Column(name="attendance_date",nullable = false)
-    private LocalDate attendeneDate;
+    private LocalDate attendanceDate;
 
     @Column(nullable = false,check = @CheckConstraint(name = "InStatusList" , constraint = "status in ('PRESENT', 'ABSENT','LEAVE','HALF_DAY')"))
     private String status;
@@ -43,5 +42,6 @@ public class Attendance {
     @CreationTimestamp
     @Column(name = "check_out_time")
     private LocalDateTime checkOutTime;
+
 
 }

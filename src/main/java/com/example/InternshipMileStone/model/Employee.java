@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Component
 @Data
@@ -59,9 +60,21 @@ public class Employee {
     @JoinColumn(unique = true)
     private User user;
 
+
+
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
+
+    @OneToMany(mappedBy = "employee")
+    private List<Attendance> attendanceList;
+
+    @OneToMany(mappedBy = "applicant")
+    List<LeaveRequest>leaveRequestList;
+
+
+
+
 
 
 }
