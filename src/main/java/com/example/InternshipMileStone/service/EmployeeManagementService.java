@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+//TODO check if @Data is needed
 @Service
 @Data
 @AllArgsConstructor
@@ -30,26 +30,25 @@ public class EmployeeManagementService {
 
 
     //Employee required functionality
+    //TODO refactor all to throw exceptions instead
 
     public boolean addEmployee( @NonNull Employee employee)
     {
-        if(employeeRepo.existsById(employee.getId()))
-            return false;
 
         employeeRepo.save(employee);
         return true;
     }
 
-    public boolean updateEmployee(@NonNull Employee employee){
+    public boolean updateEmployee(@NonNull Employee employee) throws  RuntimeException {
 
         if(!employeeRepo.existsById(employee.getId()))
-            return false;
+            throw new RuntimeException("BAD update");
         employeeRepo.save(employee);
         return true;
 
     }
 
-    public boolean deleteEmployee(@NonNull Employee employee){
+    public boolean removeEmployee(@NonNull Employee employee){
         if(employeeRepo.existsById(employee.getId()))
             return false;
         else
@@ -79,12 +78,42 @@ public class EmployeeManagementService {
         return employees.orElse(new ArrayList<Employee>());
     }
 
+    public Employee GetEmployeeByUserName(@NonNull String username){
+        var employee = employeeRepo.findEmployeeByUser_Username(username);
+        return employee.orElseGet(Employee::new);
+    }
     //Department Requeried functionality
+
+    public Employee GetEmployeeById(Long id) throws RuntimeException
+    {
+        Optional<Employee> emp = employeeRepo.findById(id);
+        if(emp.isEmpty())
+            throw new RuntimeException("no employee exists with this id ");
+
+        return emp.get();
+    }
 
     public List<Department> AllDepartments()
     {
         return departmentRepo.findAll();
     }
+
+    //TODO add role validation for what is under this
+
+
+    public boolean addUser( User user)
+    {
+        try {
+            userRepo.save(user);
+        } catch (Exception e) {
+
+            System.out.println((e.getMessage()));
+            return false;
+        }
+        return true;
+
+    }
+
 
     public boolean addDepartment( @NonNull Department department)
     {
@@ -152,36 +181,15 @@ public class EmployeeManagementService {
     }
 
 
-    //TODO Remove functions under (they are for testing only)
-
-    public boolean addRole( Role role)
-    {
-        try {
-            roleRepo.save(role);
-        } catch (Exception e) {
-
-            System.out.println((e.getMessage()));
-            return false;
-        }
-        return true;
-
+    public Employee GetEmployeeByEmail(String email) {
+        Optional <Employee> emp = employeeRepo.findByEmail(email);
+        return emp.orElse(new Employee());
     }
 
-
-    public boolean addUser( User user)
+    //TODO remove testing
+    public boolean addRole(Role role)
     {
-        try {
-            userRepo.save(user);
-        } catch (Exception e) {
-
-            System.out.println((e.getMessage()));
-            return false;
-        }
+        roleRepo.save(role);
         return true;
-
     }
-
-
-
-
 }
