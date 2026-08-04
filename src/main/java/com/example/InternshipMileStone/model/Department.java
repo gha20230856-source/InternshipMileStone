@@ -5,22 +5,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Scope("prototype")
 @Entity
 @Table(name= "department")
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-        private long id;
+        private Long id;
 
     @Column(length = 100,nullable = false,unique = true)
     private String name;
@@ -32,7 +29,7 @@ public class Department {
     @JoinColumn(name = "department_head_id")
     private Employee departmentHead;
 
-    //TODO add one TO many
+
     @OneToMany(mappedBy = "department",fetch = FetchType.LAZY)
     private List<Employee> employeeList;
 

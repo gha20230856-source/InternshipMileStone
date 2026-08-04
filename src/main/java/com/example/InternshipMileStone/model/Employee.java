@@ -13,18 +13,16 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
-@Component
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Scope("prototype")
 @Entity
 @Table(name = "employee")
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @Column(name="first_name",length = 50,nullable = false)
     private String firstName;

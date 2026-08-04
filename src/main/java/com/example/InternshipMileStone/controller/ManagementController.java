@@ -6,8 +6,11 @@ import com.example.InternshipMileStone.model.User;
 import com.example.InternshipMileStone.service.AttendanceService;
 import com.example.InternshipMileStone.service.EmployeeManagementService;
 import com.example.InternshipMileStone.service.PayrollService;
+import com.example.InternshipMileStone.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -18,83 +21,45 @@ public class ManagementController {
     private AttendanceService attendanceService;
     private EmployeeManagementService employeeManagementService;
     private PayrollService payrollService;
+    private UserService userService;
 
-    @GetMapping("/Employee/{username}")
-    public Employee getEmployee(@PathVariable String username)
+
+
+    @PostMapping("/admin/user")
+    ResponseEntity<String> registerUser(@RequestBody User user)
     {
-        return employeeManagementService.GetEmployeeByUserName(username);
-    }
-    @PostMapping("/Employee")
-    public String insertEmployee(@RequestBody Employee employee){
-        try
-        {
-            employeeManagementService.addEmployee(employee);
-
-        }
-        catch (Exception ex)
-        {
-            return "insertion failed";
-        }
-
-        return "insertion succeeded";
+        return userService.registerUser(user);
     }
 
-    @PutMapping("/Employee")
-    public String updateEmployee(@RequestBody Employee employee)
+    @PostMapping("/admin/employee")
+    ResponseEntity<String> addEmployee(@RequestBody Employee employee)
     {
-        try
-        {
-            employeeManagementService.updateEmployee(employee);
-
-        }
-        catch (Exception ex)
-        {
-            return "update failed";
-        }
-        return "success";
+        return employeeManagementService.addEmployee(employee);
     }
 
-    @DeleteMapping("/Employee/{username}")
-    public String deleteEmployee(@PathVariable String username)
+    @DeleteMapping("/admin/employee/{id}")
+    ResponseEntity<String> removeEmployee(@PathVariable Long id)
     {
-        try {
-            employeeManagementService.removeEmployee(employeeManagementService.GetEmployeeByUserName(username));
-        }
-        catch(Exception ex)
-        {
-            return ex.getMessage();
-        }
+        return employeeManagementService.removeEmployee(id);
 
-        return "success";
     }
 
-    @GetMapping("/Employees")
-    public Collection<Employee> getEmployees()
+    @PutMapping("/employee")
+    @PreAuthorize("#employee?.getId() == principle.id or hadRole('Admin')")
+    ResponseEntity<String> updateEmployee(@RequestBody Employee employee)
     {
-        return employeeManagementService.AllEmployees();
+        return employeeManagementService.updateEmployee(employee);
     }
-    @PostMapping("/role")
-    public String addRole(@RequestBody Role role)
+
+    @GetMapping("/employees")
+    ResponseEntity<Collection<Employee>> getEmployees()
     {
-        employeeManagementService.addRole(role);
-        return "success";
-    }
-    @PostMapping("/user")
-    public String adduser(@RequestBody User user)
-    {
-        employeeManagementService.addUser(user);
-        return "success";
+        return employeeManagementService.getEmployees();
     }
 
+    //	Search/filter employees by department, designation, or status (active/inactive)
 
-
-    @GetMapping("test")
-    public String test(HttpServletRequest session) {
-        return "test"+ session.getSession().getId();
-    }
-
-
-
+    @GetMapping("/employee")
 
 
 }

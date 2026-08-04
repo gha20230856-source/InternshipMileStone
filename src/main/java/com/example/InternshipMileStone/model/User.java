@@ -15,18 +15,17 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@Component
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Scope("prototype")
 @Entity
 @Table(name= "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @Column(name="name",unique = true,nullable = false,length = 50)
     private String username;

@@ -13,18 +13,17 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Component
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Scope("prototype")
 @Entity
 @Table(name = "pay_roll")
 public class Payroll {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
 
     @Column(nullable = false,check = @CheckConstraint(name = "MonthRangeCheck" , constraint = "month >=1 AND month <=12 "))

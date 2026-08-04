@@ -12,18 +12,17 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Component
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Scope("prototype")
 @Entity
 @Table(name = "leave_request")
 public class LeaveRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "employee_id")
