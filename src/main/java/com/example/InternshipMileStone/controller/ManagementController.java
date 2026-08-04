@@ -119,5 +119,16 @@ public class ManagementController {
         employeeManagementService.updateEmployeeDepartment(email,department);
         return ResponseEntity.ok("head updated");
     }
+    @GetMapping("/admin/employeeSalary/{lower}/{upper}")
+    public ResponseEntity<Collection<Employee>> getEmployeesInSalRange(@PathVariable Long lower,@PathVariable Long upper)
+    {
+        return ResponseEntity.ok(employeeManagementService.salaryRangeQuery(lower,upper));
+    }
+    @GetMapping("/admin/employeeSalaryAboveDepartmentAverage")
+    ResponseEntity<Collection<Employee>> getEmployeesAboveDepartmentAverage()
+    {
+        return ResponseEntity.ok(employeeManagementService.employeesAboveTheirDepartmentAverage());
+    }
+
 
 }

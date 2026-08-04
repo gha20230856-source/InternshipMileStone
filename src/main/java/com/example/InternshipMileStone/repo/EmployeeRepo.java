@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,4 +27,9 @@ public interface EmployeeRepo  extends JpaRepository<Employee,Long> {
     List<Employee> findEmployeeByStatus(String s);
 
 
+    @Query("Select e from Employee e where e.salary >= ?1 and e.salary <=?2")
+    Collection<Employee> salaryRangeQuery(Long lower, Long upper);
+
+    @Query("Select e from Employee e where e.salary >(Select avg(e2.salary) from Employee e2 where e2.department.id = e.department.id)")
+    Collection<Employee> employeesAboveTheirDepartmentAverage();
 }

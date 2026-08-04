@@ -8,4 +8,5 @@ import org.springframework.stereotype.Service;
 @Data
 @AllArgsConstructor
 public class AttendanceService {
+
 }

@@ -1,6 +1,5 @@
 package com.example.InternshipMileStone.service;
 
-
 import com.example.InternshipMileStone.model.Department;
 import com.example.InternshipMileStone.model.Employee;
 import com.example.InternshipMileStone.model.Role;
@@ -136,6 +135,14 @@ public class EmployeeManagementService {
         Employee employeeEntity = employeeRepo.findByEmail(email).
                 orElseThrow(() -> new EntityNotFoundException("no employee with this name exists"));
         employeeEntity.setDepartment(departmentEntity);
+    }
 
+    public Collection<Employee> salaryRangeQuery(Long lower, Long upper) {
+        return employeeRepo.salaryRangeQuery(lower,upper);
+    }
+
+    public Collection<Employee> employeesAboveTheirDepartmentAverage()
+    {
+        return employeeRepo.employeesAboveTheirDepartmentAverage();
     }
 }
