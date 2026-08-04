@@ -1,5 +1,6 @@
 package com.example.InternshipMileStone.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,10 +28,12 @@ public class Department {
 
     @OneToOne(optional = true)
     @JoinColumn(name = "department_head_id")
+    @JsonIgnoreProperties("department")
     private Employee departmentHead;
 
 
     @OneToMany(mappedBy = "department",fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("department")
     private List<Employee> employeeList;
 
 

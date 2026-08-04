@@ -1,4 +1,4 @@
-package exceptionhandler;
+package com.example.InternshipMileStone.exceptionhandler;
 
 
 import jakarta.persistence.EntityNotFoundException;
