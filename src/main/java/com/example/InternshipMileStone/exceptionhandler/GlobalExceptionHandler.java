@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpServerErrorException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -27,5 +28,11 @@ public class GlobalExceptionHandler {
     public  ResponseEntity<String> ConstraintViolation (DataIntegrityViolationException ex)
         {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("bad input to database");
+        }
+
+        @ExceptionHandler(HttpServerErrorException.InternalServerError.class)
+    public ResponseEntity<String> UnknownError(HttpServerErrorException.InternalServerError ex)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An Error Occured");
         }
 }
