@@ -6,10 +6,13 @@ import com.example.InternshipMileStone.model.Employee;
 
 import com.example.InternshipMileStone.model.dto.response.AttendanceResponseDTO;
 import com.example.InternshipMileStone.repo.AttendanceRepo;
+import com.example.InternshipMileStone.repo.DepartmentRepo;
 import com.example.InternshipMileStone.repo.EmployeeRepo;
 import com.example.InternshipMileStone.repo.LeaveRequestRepo;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.repository.query.Param;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -28,7 +31,7 @@ public class AttendanceService {
     private final AttendanceRepo attendanceRepo;
     private final EmployeeRepo employeeRepo;
     private final LeaveRequestRepo leaveRequestRepo;
-
+    private final DepartmentRepo departmentRepo;
 
 
     @Value("${attendance.required-hours}")
@@ -120,11 +123,15 @@ public class AttendanceService {
     }
 
 
+
+    //TODO ask what paramter to replace employeeId with??
     @Transactional(readOnly = true)
-    public List<AttendanceResponseDTO> getAttendanceHistory(Long employeeId, Long departmentId, LocalDate startDate, LocalDate endDate) {
-        // Default to current month if no date range provided
-        if (startDate == null) startDate = LocalDate.now().withDayOfMonth(1);
-        if (endDate == null) endDate = LocalDate.now();
+    public List<AttendanceResponseDTO> getAttendanceHistory(Long employeeId, String departmentName, LocalDate startDate, LocalDate endDate) {
+        // Default  if some value doesn't exist ( == NULL) return all that apply to rest of conditions
+
+
+       Long departmentId = departmentRepo.findByName(departmentName)
+               .orElseThrow( ()-> new EntityNotFoundException("no department with this name")).getId();
 
         return attendanceRepo.findAttendanceHistory(employeeId, departmentId, startDate, endDate)
                 .stream()

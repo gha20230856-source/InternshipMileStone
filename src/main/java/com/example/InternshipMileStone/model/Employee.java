@@ -70,7 +70,7 @@ public class Employee {
     private List<Attendance> attendanceList;
 
     @OneToMany(mappedBy = "applicant")
-    List<LeaveRequest>leaveRequestList;
+    private List<LeaveRequest>leaveRequestList;
 
 
 

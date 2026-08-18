@@ -40,4 +40,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> accessDenied(HttpClientErrorException.Forbidden ex) {
         return  ResponseEntity.status(HttpStatus.FORBIDDEN).body("you can't access this resource");
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> illegalArgument(HttpClientErrorException.Forbidden ex) {
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("bad argument");
+    }
 }

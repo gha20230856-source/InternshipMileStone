@@ -14,10 +14,9 @@ import java.time.LocalDate;
 @SpringBootApplication
 public class InternshipMileStoneApplication {
 
-	public static void main(String[] args) {
+	 static void main(String[] args) {
 
-
-		ApplicationContext context = SpringApplication.run(InternshipMileStoneApplication.class, args);
+		 SpringApplication.run(InternshipMileStoneApplication.class, args);
 
 
 
