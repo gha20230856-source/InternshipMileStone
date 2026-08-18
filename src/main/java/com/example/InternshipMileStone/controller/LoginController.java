@@ -1,6 +1,7 @@
 package com.example.InternshipMileStone.controller;
 
 import com.example.InternshipMileStone.model.User;
+import com.example.InternshipMileStone.repo.UserRepo;
 import com.example.InternshipMileStone.service.JWTService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
     private JWTService jwtService;
     private AuthenticationManager authenticationManager;
+    private UserRepo userRepo;
     @PostMapping("/login")
     String logIntoAccount(@RequestBody User user)
     {
@@ -22,8 +24,8 @@ public class LoginController {
         Authentication authentication  = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken
                         (user.getUsername(),user.getPassword()));
-
-        if(authentication.isAuthenticated())
+        User current = userRepo.findByUsername(user.getUsername());
+        if(authentication.isAuthenticated()&& current.getEnabled() )
         {
             return jwtService.generateToken(user.getUsername());
         }

@@ -32,4 +32,6 @@ public interface EmployeeRepo  extends JpaRepository<Employee,Long> {
 
     @Query("Select e from Employee e where e.salary >(Select avg(e2.salary) from Employee e2 where e2.department.id = e.department.id)")
     Collection<Employee> employeesAboveTheirDepartmentAverage();
+
+    Optional<Employee> findByUserId(Long userId);
 }

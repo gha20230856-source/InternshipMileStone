@@ -31,15 +31,15 @@ public class Attendance {
     @Column(name="attendance_date",nullable = false)
     private LocalDate attendanceDate;
 
-    @Column(nullable = false,check = @CheckConstraint(name = "InStatusList" , constraint = "status in ('PRESENT', 'ABSENT','LEAVE','HALF_DAY')"))
+    @Column(nullable = false,check = @CheckConstraint(name = "InStatusList" , constraint = "status in ('PENDING','PRESENT', 'ABSENT','LEAVE','HALF_DAY')"))
     private String status;
 
     @CreationTimestamp
-    @Column(name = "check_in_time")
+    @Column(name = "check_in_time",nullable = true)
     private LocalDateTime checkInTime;
 
 
-    @Column(name = "check_out_time")
+    @Column(name = "check_out_time",nullable = true)
     private LocalDateTime checkOutTime;
 
 

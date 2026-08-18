@@ -57,7 +57,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
         );
 //        http.formLogin(Customizer.withDefaults()); if you want a form
-        http.httpBasic(Customizer.withDefaults());//use basic http auth
+//        http.httpBasic(Customizer.withDefaults());//use basic http auth
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
