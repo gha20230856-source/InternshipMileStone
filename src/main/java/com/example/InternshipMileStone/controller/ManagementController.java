@@ -5,6 +5,7 @@ import com.example.InternshipMileStone.model.Employee;
 import com.example.InternshipMileStone.model.Role;
 import com.example.InternshipMileStone.model.User;
 import com.example.InternshipMileStone.model.dto.common.EmployeeCreatedDTO;
+import com.example.InternshipMileStone.model.mappers.EmployeeMapper;
 import com.example.InternshipMileStone.service.AttendanceService;
 import com.example.InternshipMileStone.service.EmployeeManagementService;
 import com.example.InternshipMileStone.service.PayrollService;
@@ -29,9 +30,13 @@ public class ManagementController {
     private EmployeeManagementService employeeManagementService;
     private PayrollService payrollService;
     private UserService userService;
+    private EmployeeMapper  employeeMapper;
 
 
-
+    @PostMapping("/hard")
+    EmployeeCreatedDTO employeetoEmployeeCreatedDTO(@RequestBody Employee employee) {
+        return employeeMapper.employeetoEmployeeCreatedDTO(employee);
+    }
 
     @PostMapping("/admin/employee")
     ResponseEntity<String> addEmployee(@RequestBody EmployeeCreatedDTO request) {
@@ -53,7 +58,9 @@ public class ManagementController {
 
     @GetMapping("/employees")
     ResponseEntity<Collection<Employee>> getEmployees() {
+
         return employeeManagementService.getEmployees();
+
     }
 
     //	Search/filter employees by department, designation, or status (active/inactive)

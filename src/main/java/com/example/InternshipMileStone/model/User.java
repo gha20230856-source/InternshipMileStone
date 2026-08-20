@@ -1,5 +1,6 @@
 package com.example.InternshipMileStone.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -49,6 +50,9 @@ public class User {
     @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
+
+
+     @JsonIgnoreProperties()
     @OneToOne(mappedBy = "user")
     private Employee employee;
 

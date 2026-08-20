@@ -91,7 +91,7 @@ public class AttendanceController {
 
 
 
-    @PutMapping("Admin/{id}/status")
+    @PutMapping("admin/{id}/status")
     public ResponseEntity<LeaveResponseDTO> reviewLeaveRequest(
             Authentication authentication,
             @PathVariable("id") Long leaveId,
@@ -100,7 +100,7 @@ public class AttendanceController {
         return ResponseEntity.ok(leaveService.reviewLeaveRequest(reviewerUserId, leaveId, statusDTO.status()));
     }
 
-    @GetMapping("Admin/AllLeaves")
+    @GetMapping("admin/AllLeaves")
     public ResponseEntity<List<LeaveResponseDTO>> getAllLeaves(
             @RequestParam(required = false) String status) {
         return ResponseEntity.ok(leaveService.getAllLeaves(status));

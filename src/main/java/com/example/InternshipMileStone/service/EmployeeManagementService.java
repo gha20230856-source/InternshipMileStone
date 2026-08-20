@@ -182,4 +182,9 @@ public class EmployeeManagementService {
     public Collection<Employee> employeesAboveTheirDepartmentAverage() {
         return employeeRepo.employeesAboveTheirDepartmentAverage();
     }
+    public EmployeeCreatedDTO mapToDTO(Employee employee){
+
+        return new EmployeeCreatedDTO(employee.getFirstName(),employee.getLastName(),employee.getEmail(),
+                employee.getDesignation(),employee.getSalary(),employee.getDepartment().getName());
+    }
 }
