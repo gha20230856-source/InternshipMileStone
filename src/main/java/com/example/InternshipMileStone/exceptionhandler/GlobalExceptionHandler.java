@@ -31,8 +31,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("bad input to database " + ex.getMessage());
     }
 
-
-
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> illegalArgument(IllegalArgumentException ex) {
         return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("bad argument");
