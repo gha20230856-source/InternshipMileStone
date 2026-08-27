@@ -11,6 +11,7 @@ public record AttendanceResponseDTO(
         String departmentName,
         LocalDate attendanceDate,
         String status,
+
         LocalDateTime checkInTime,
         LocalDateTime checkOutTime,
         Double hoursWorked
