@@ -11,6 +11,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+
+//TODO add been validation to DTOs
+
+//TODO  create update EntityFrom DTO for more classes
+
 @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.WARN, unmappedTargetPolicy = ReportingPolicy.WARN)
 public abstract class DepartmentMapper {
 
