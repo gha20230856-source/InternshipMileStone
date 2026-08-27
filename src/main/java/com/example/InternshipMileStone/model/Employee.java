@@ -63,7 +63,6 @@ public class Employee {
 
     @ManyToOne
     @JoinColumn(name = "department_id")
-    @JsonIgnoreProperties({"departmentHead", "employeeList"})
     private Department department;
 
     @OneToMany(mappedBy = "employee")

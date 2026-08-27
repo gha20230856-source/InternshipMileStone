@@ -5,23 +5,22 @@ import com.example.InternshipMileStone.model.Employee;
 import com.example.InternshipMileStone.model.Role;
 import com.example.InternshipMileStone.model.User;
 import com.example.InternshipMileStone.model.dto.common.EmployeeCreatedDTO;
+import com.example.InternshipMileStone.model.dto.request.DepartmentUpdateDTO;
+import com.example.InternshipMileStone.model.dto.request.EmployeeUpdateDTO;
+import com.example.InternshipMileStone.model.dto.response.DepartmentResponseDTO;
+import com.example.InternshipMileStone.model.mappers.DepartmentMapper;
+import com.example.InternshipMileStone.model.mappers.EmployeeMapper;
 import com.example.InternshipMileStone.repo.DepartmentRepo;
 import com.example.InternshipMileStone.repo.EmployeeRepo;
 import com.example.InternshipMileStone.repo.RoleRepo;
 import com.example.InternshipMileStone.repo.UserRepo;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NonNull;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -34,22 +33,52 @@ public class EmployeeManagementService {
     private DepartmentRepo departmentRepo;
     private RoleRepo roleRepo;
     private UserService userService;
+    private EmployeeMapper employeeMapper;
+    private DepartmentMapper departmentMapper;
 
     //employee database operations (basic)
 
     @Transactional
-    public ResponseEntity<String> updateEmployee(Employee employee) {
+    public boolean updateEmployee(String targetEmployeeEmail, EmployeeUpdateDTO employee , Boolean admin) {
 
-        if (!employeeRepo.existsById(employee.getId()))
-            throw new EntityNotFoundException("no employee with this id ");
+        User currentUser = userRepo.findByEmail(targetEmployeeEmail).orElseThrow(EntityNotFoundException::new);
 
-        employeeRepo.save(employee);
+        Employee targetEmployee = employeeRepo.findByUser(currentUser).orElseThrow(EntityNotFoundException::new);
 
-        return new ResponseEntity<String>("Employee updated", HttpStatus.ACCEPTED);
+        if(employee.firstName() !=null)
+            targetEmployee.setFirstName(employee.firstName());
+
+        if(employee.lastName() !=null)
+            targetEmployee.setLastName(employee.lastName());
+
+        if(employee.phone() !=null)
+            targetEmployee.setPhone(employee.phone());
+
+        if(employee.email() !=null) {
+            currentUser.setEmail(employee.email());
+            targetEmployee.setEmail(employee.email());
+        }
+
+        if(employee.address() !=null)
+            targetEmployee.setAddress(employee.address());
+
+        if(employee.departmentName() !=null&&admin)
+            targetEmployee.setDepartment(departmentRepo.findByName(employee.departmentName()).orElseThrow(EntityNotFoundException::new));
+
+        if(employee.designation() !=null &&admin)
+            targetEmployee.setDesignation(employee.designation());
+
+        if(employee.status() !=null &&admin )
+            targetEmployee.setStatus(employee.status());
+
+        if(employee.salary() !=null && admin)
+            targetEmployee.setSalary(employee.salary());
+
+        return true;
     }
 
     @Transactional
-    public ResponseEntity<String> addEmployee(EmployeeCreatedDTO dto) {
+    public String addEmployee(EmployeeCreatedDTO dto) {
 
         User user = new User();
         user.setUsername(dto.email());
@@ -88,48 +117,51 @@ public class EmployeeManagementService {
         employee.setUser(savedUser);
         employeeRepo.save(employee);
 
-        return new ResponseEntity<>("Employee inserted", HttpStatus.CREATED);
+        return "Employee inserted";
     }
 
-    public ResponseEntity<String> removeEmployee(Long id) {
+
+    public String removeEmployee(Long id) {
         employeeRepo.deleteById(id);
-        return new ResponseEntity<String>("employee deleted", HttpStatus.OK);
+        return "employee deleted";
     }
 
-    public ResponseEntity<Collection<Employee>> getEmployees() {
-        return new ResponseEntity<>(employeeRepo.findAll(), HttpStatus.OK);
+    public List<Employee> getEmployees() {
+        return employeeRepo.findAll();
     }
 
-    public ResponseEntity<Collection<Employee>> getEmployees(String department) {
+    public List<Employee> getEmployees(String department) {
         Department departmentEntity = departmentRepo.findByName(department)
                 .orElseThrow(() -> new EntityNotFoundException("no department with this name "));
 
-        return new ResponseEntity<>(departmentEntity.getEmployeeList(), HttpStatus.OK);
+        return departmentEntity.getEmployeeList();
     }
 
-    public ResponseEntity<Collection<Employee>> getEmployeesWithDesignation(String d) {
-        Collection<Employee> list = employeeRepo.findEmployeeByDesignation(d).orElse(new ArrayList<Employee>());
-        return new ResponseEntity<>(list, HttpStatus.OK);
+    public List<Employee> getEmployeesWithDesignation(String d) {
+        List<Employee> list = employeeRepo.findEmployeeByDesignation(d).orElse(new ArrayList<Employee>());
+
+        return list;
     }
 
-    public ResponseEntity<Collection<Employee>> getEmployeesWithStatus(String d) {
-        Collection<Employee> list = employeeRepo.findEmployeeByStatus(d);
-        return new ResponseEntity<>(list, HttpStatus.OK);
+    public List<Employee> getEmployeesWithStatus(String d) {
+        List<Employee> list = employeeRepo.findEmployeeByStatus(d);
+        return list ;
     }
 
 
     //department opertaions
 
-    public ResponseEntity<String> addDepartment(Department department) {
+    public String addDepartment(Department department) {
         if (department.getName() == null)
             throw new EntityNotFoundException("no name for added department");
-        department.setId(null);
+
+
         if (departmentRepo.findByName(department.getName()).isEmpty())
             departmentRepo.save(department);
         else
             throw new AccessDeniedException("department already exists");
 
-        return new ResponseEntity<>("department added", HttpStatus.CREATED);
+        return "department added";
     }
 
 
@@ -142,17 +174,20 @@ public class EmployeeManagementService {
     }
 
     @Transactional
-    public void updateDepartment(Department department) {
+    public void updateDepartment(DepartmentUpdateDTO department) {
 
-        Department departmentEntity = departmentRepo.findByName(department.getName()).
+        Department departmentEntity = departmentRepo.findByName(department.oldName()).
                 orElseThrow(() -> new EntityNotFoundException("no department with this name exists"));
-        departmentEntity.setDescription(department.getDescription());
-        departmentEntity.setDepartmentHead(department.getDepartmentHead());
-
+        departmentMapper.updateEntityFromDTO(department, departmentEntity);
     }
 
-    public Collection<Department> getDepartments() {
-        return departmentRepo.findAll();
+    public List<DepartmentResponseDTO> getDepartments() {
+        List < Department> departments =  departmentRepo.findAll();
+
+        List<DepartmentResponseDTO> departmentsDTO =
+                departmentMapper.toResponseDTOList(departments);
+
+        return departmentsDTO;
     }
 
 
@@ -175,7 +210,7 @@ public class EmployeeManagementService {
         employeeEntity.setDepartment(departmentEntity);
     }
 
-    public Collection<Employee> salaryRangeQuery(Long lower, Long upper) {
+    public Collection<Employee> salaryRangeQuery(BigDecimal lower, BigDecimal upper) {
         return employeeRepo.salaryRangeQuery(lower, upper);
     }
 
