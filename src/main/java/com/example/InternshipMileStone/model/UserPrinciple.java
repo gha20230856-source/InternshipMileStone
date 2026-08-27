@@ -3,6 +3,7 @@ package com.example.InternshipMileStone.model;
 import com.example.InternshipMileStone.repo.EmployeeRepo;
 import lombok.AllArgsConstructor;
 import org.jspecify.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserPrinciple implements UserDetails {
     private User user;
-    private EmployeeRepo employeeRepo;
+    private boolean enabled;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
@@ -52,7 +53,6 @@ public class UserPrinciple implements UserDetails {
     @Override
     public boolean isEnabled() {
 
-        Employee current = employeeRepo.findByUser(user).orElseThrow(()->new RuntimeException("Employee not found"));
-        return current.getStatus().equalsIgnoreCase("ACTIVE");
+       return enabled;
     }
 }

@@ -4,7 +4,6 @@ package com.example.InternshipMileStone.controller;
 import com.example.InternshipMileStone.model.Employee;
 import com.example.InternshipMileStone.model.User;
 import com.example.InternshipMileStone.model.dto.common.LeaveBalanceDTO;
-import com.example.InternshipMileStone.model.dto.common.LeaveStatusUpdateDTO;
 import com.example.InternshipMileStone.model.dto.request.LeaveApplyRequestDTO;
 import com.example.InternshipMileStone.model.dto.response.AttendanceResponseDTO;
 import com.example.InternshipMileStone.model.dto.response.LeaveResponseDTO;
@@ -15,12 +14,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import com.example.InternshipMileStone.service.AttendanceService;
 
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 

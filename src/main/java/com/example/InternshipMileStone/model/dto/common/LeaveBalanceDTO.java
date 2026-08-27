@@ -1,5 +1,7 @@
 package com.example.InternshipMileStone.model.dto.common;
 
+import jakarta.validation.constraints.Positive;
+
 public record LeaveBalanceDTO(
         Long employeeId,
         String employeeName,
