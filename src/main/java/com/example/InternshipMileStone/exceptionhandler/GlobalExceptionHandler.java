@@ -42,7 +42,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> illegalArgument(HttpClientErrorException.Forbidden ex) {
+    public ResponseEntity<String> illegalArgument(IllegalArgumentException ex) {
         return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("bad argument");
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> illegalState(IllegalStateException ex) {
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 }

@@ -39,9 +39,9 @@ public class EmployeeManagementService {
     //employee database operations (basic)
 
     @Transactional
-    public boolean updateEmployee(String targetEmployeeEmail, EmployeeUpdateDTO employee , Boolean admin) {
+    public boolean updateEmployee(String username, EmployeeUpdateDTO employee , Boolean admin) {
 
-        User currentUser = userRepo.findByEmail(targetEmployeeEmail).orElseThrow(EntityNotFoundException::new);
+        User currentUser = userRepo.findByUsername(username).orElseThrow(EntityNotFoundException::new);
 
         Employee targetEmployee = employeeRepo.findByUser(currentUser).orElseThrow(EntityNotFoundException::new);
 
@@ -55,7 +55,7 @@ public class EmployeeManagementService {
             targetEmployee.setPhone(employee.phone());
 
         if(employee.email() !=null) {
-            currentUser.setEmail(employee.email());
+
             targetEmployee.setEmail(employee.email());
         }
 

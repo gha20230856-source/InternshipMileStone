@@ -28,7 +28,7 @@ public class LeaveRequest {
     @JoinColumn(name = "employee_id")
     private Employee applicant;
 
-    @Column( name = "leave_type",length = 30 , nullable = false,check = @CheckConstraint(name ="InLeaveList" , constraint = "leave_type IN ('SICK','CASUAL ','EARNED ','UNPAID')"))
+    @Column( name = "leave_type",length = 30 , nullable = false,check = @CheckConstraint(name ="InLeaveList" , constraint = "leave_type IN ('SICK','CASUAL','EARNED','UNPAID')"))
     private String leaveType;
 
     @Column(name="start_date",nullable = false)

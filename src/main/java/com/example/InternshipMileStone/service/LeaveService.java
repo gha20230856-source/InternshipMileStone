@@ -46,7 +46,7 @@ public class  LeaveService {
 
         long requestedDays = ChronoUnit.DAYS.between(request.startDate(), request.endDate()) + 1;
 
-        if (!"UNPAID".equalsIgnoreCase(request.leaveType().trim())) {
+        if (!request.leaveType().trim().equalsIgnoreCase("UNPAID") && !request.leaveType().trim().equalsIgnoreCase("SICK") && !request.leaveType().trim().equalsIgnoreCase("EARNED")) {
             LeaveBalanceDTO balance = getLeaveBalance(userId, request.startDate().getYear());
             if (requestedDays > balance.remainingDays()) {
                 throw new IllegalStateException("Insufficient leave balance. Remaining: "
@@ -70,6 +70,7 @@ public class  LeaveService {
     @Transactional
     public LeaveResponseDTO reviewLeaveRequest(Long reviewerUserId, Long leaveId, String status) {
         String updatedStatus = status.trim().toUpperCase();
+        System.out.println("hi");
         if (!updatedStatus.equals("APPROVED") && !updatedStatus.equals("REJECTED")) {
             throw new IllegalArgumentException("Status must be either APPROVED or REJECTED.");
         }
@@ -79,7 +80,7 @@ public class  LeaveService {
         LeaveRequest leaveRequest = leaveRequestRepo.findById(leaveId)
                 .orElseThrow(() -> new IllegalArgumentException("Leave request not found with ID: " + leaveId));
 
-        if (!"PENDING".equalsIgnoreCase(leaveRequest.getStatus())) {
+        if (!leaveRequest.getStatus().equalsIgnoreCase("PENDING")) {
             throw new IllegalStateException("Leave request has already been processed.");
         }
 
@@ -103,6 +104,15 @@ public class  LeaveService {
 
     @Transactional(readOnly = true)
     public List<LeaveResponseDTO> getAllLeaves(String status) {
+
+        if(!(status == null || status.isBlank()
+                || status.equalsIgnoreCase("PENDING")
+                ||status.equalsIgnoreCase("APPROVED")
+                ||status.equalsIgnoreCase("REJECTED"))
+        )
+            throw new IllegalArgumentException("Status must be either APPROVED or REJECTED or PENDING.");
+
+
         List<LeaveRequest> requests = (status != null && !status.isBlank())
                 ? leaveRequestRepo.findByStatus(status.trim().toUpperCase())
                 : leaveRequestRepo.findAll();
@@ -122,7 +132,7 @@ public class  LeaveService {
                 .findApprovedLeavesByEmployeeAndYear(employee.getId(), targetYear);
 
         long usedDays = approvedLeaves.stream()
-                .filter(l -> !"UNPAID".equalsIgnoreCase(l.getLeaveType().trim()))
+                .filter(l -> !l.getLeaveType().trim().equalsIgnoreCase("UNPAID") && !l.getLeaveType().trim().equalsIgnoreCase("SICK")  )
                 .mapToLong(l -> ChronoUnit.DAYS.between(l.getStartDate(), l.getEndDate()) + 1)
                 .sum();
 

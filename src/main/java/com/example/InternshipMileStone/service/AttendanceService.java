@@ -2,6 +2,7 @@ package com.example.InternshipMileStone.service;
 
 
 import com.example.InternshipMileStone.model.Attendance;
+import com.example.InternshipMileStone.model.Department;
 import com.example.InternshipMileStone.model.Employee;
 
 import com.example.InternshipMileStone.model.dto.response.AttendanceResponseDTO;
@@ -12,8 +13,6 @@ import com.example.InternshipMileStone.repo.LeaveRequestRepo;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.data.repository.query.Param;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -124,14 +123,13 @@ public class AttendanceService {
 
 
 
-    //TODO ask what paramter to replace employeeId with??
+
     @Transactional(readOnly = true)
     public List<AttendanceResponseDTO> getAttendanceHistory(Long employeeId, String departmentName, LocalDate startDate, LocalDate endDate) {
         // Default  if some value doesn't exist ( == NULL) return all that apply to rest of conditions
 
-
-       Long departmentId = departmentRepo.findByName(departmentName)
-               .orElseThrow( ()-> new EntityNotFoundException("no department with this name")).getId();
+        Department department =  departmentRepo.findByName(departmentName).orElse(null);
+       Long departmentId = department == null ? null : department.getId();
 
         return attendanceRepo.findAttendanceHistory(employeeId, departmentId, startDate, endDate)
                 .stream()

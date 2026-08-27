@@ -2,12 +2,14 @@ package com.example.InternshipMileStone.controller;
 
 
 import com.example.InternshipMileStone.model.Employee;
+import com.example.InternshipMileStone.model.User;
 import com.example.InternshipMileStone.model.dto.common.LeaveBalanceDTO;
 import com.example.InternshipMileStone.model.dto.common.LeaveStatusUpdateDTO;
 import com.example.InternshipMileStone.model.dto.request.LeaveApplyRequestDTO;
 import com.example.InternshipMileStone.model.dto.response.AttendanceResponseDTO;
 import com.example.InternshipMileStone.model.dto.response.LeaveResponseDTO;
 import com.example.InternshipMileStone.repo.EmployeeRepo;
+import com.example.InternshipMileStone.repo.UserRepo;
 import com.example.InternshipMileStone.service.LeaveService;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,28 +24,32 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
+//TODO implement a proper mapper
 @RestController
 @AllArgsConstructor
 public class AttendanceController {
     private AttendanceService attendanceService;
     private EmployeeRepo employeeRepo;
     private LeaveService leaveService;
+    private UserRepo userRepo;
 
 
+
+    // works fine but the user needs to manually checkin
     @PostMapping("/check-in")
     public ResponseEntity<AttendanceResponseDTO> checkIn(Authentication authentication) {
         Long employeeId = extractEmployeeId(authentication);
         return ResponseEntity.ok(attendanceService.checkIn(employeeId));
     }
 
-    @PostMapping("/check-out")
+    @  PostMapping("/check-out")
     public ResponseEntity<AttendanceResponseDTO> checkOut(Authentication authentication) {
         Long employeeId = extractEmployeeId(authentication);
         return ResponseEntity.ok(attendanceService.checkOut(employeeId));
     }
 
 
-    @GetMapping("Admin/history")
+    @GetMapping("admin/history")
     public ResponseEntity<List<AttendanceResponseDTO>> getAttendanceHistory(
             @RequestParam(required = false) Long employeeId,
             @RequestParam(required = false) String departmentName,
@@ -58,13 +64,13 @@ public class AttendanceController {
 
 
     private Long extractEmployeeId(Authentication authentication) {
-        // Parse user ID from JWT principal
-        Long userId = Long.parseLong(authentication.getName());
+        // get user name
+        String  userName = (authentication.getName());
 
         // Fetch Employee mapped to this userId
-        return employeeRepo.findByUserId(userId)
+        return employeeRepo.findEmployeeByUser_Username(userName)
                 .map(Employee::getId)
-                .orElseThrow(() -> new RuntimeException("No Employee profile associated with User ID: " + userId));
+                .orElseThrow(() -> new RuntimeException("No Employee profile associated with Employee name: " + userName));
     }
 
     @PostMapping("/apply")
@@ -91,13 +97,13 @@ public class AttendanceController {
 
 
 
-    @PutMapping("admin/{id}/status")
+    @PutMapping("admin/{id}/status/{status}")
     public ResponseEntity<LeaveResponseDTO> reviewLeaveRequest(
             Authentication authentication,
             @PathVariable("id") Long leaveId,
-            @RequestBody LeaveStatusUpdateDTO statusDTO) {
+            @PathVariable  String status) {
         Long reviewerUserId = extractUserId(authentication);
-        return ResponseEntity.ok(leaveService.reviewLeaveRequest(reviewerUserId, leaveId, statusDTO.status()));
+        return ResponseEntity.ok(leaveService.reviewLeaveRequest(reviewerUserId, leaveId, status));
     }
 
     @GetMapping("admin/AllLeaves")
@@ -107,7 +113,11 @@ public class AttendanceController {
     }
 
     private Long extractUserId(Authentication authentication) {
-        return Long.parseLong(authentication.getName());
+
+        String  userName = (authentication.getName());
+        User user = userRepo.findByUsername(userName).orElseThrow(() -> new RuntimeException("No User associated with Username " + userName));
+        return user.getId();
+
     }
 
 }

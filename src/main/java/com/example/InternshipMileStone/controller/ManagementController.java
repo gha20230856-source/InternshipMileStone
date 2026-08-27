@@ -67,15 +67,15 @@ public class ManagementController {
     }
     //uses user email
     @PutMapping("/employee")
-    @PreAuthorize(" #TargetEmail == null or #TargetEmail == authentication.name or hasRole('ADMIN') ")
+    @PreAuthorize(" #target == null or #target == authentication.name or hasRole('ADMIN') ")
     ResponseEntity<String> updateEmployee(Authentication authentication,
-            @RequestParam(required = false) String TargetEmail
+            @RequestParam(required = false) String target
             ,@RequestBody EmployeeUpdateDTO employee) {
 
-        if (TargetEmail == null) {TargetEmail = authentication.getName();}
+        if (target == null) {target = authentication.getName();}
 
 
-        boolean result =  employeeManagementService.updateEmployee(TargetEmail,employee,hasRole(authentication,"ADMIN"));
+        boolean result =  employeeManagementService.updateEmployee(target,employee,hasRole(authentication,"ADMIN"));
 
         return new ResponseEntity<>("success", HttpStatus.OK);
 
