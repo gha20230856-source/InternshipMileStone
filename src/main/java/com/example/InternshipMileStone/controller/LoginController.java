@@ -22,7 +22,7 @@ public class LoginController {
     @PostMapping("/login")
     String logIntoAccount(@RequestBody User user)
     {
-        System.out.println(user.getUsername() + " " + user.getPassword());
+
         Authentication authentication  = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken
                         (user.getUsername(),user.getPassword()));

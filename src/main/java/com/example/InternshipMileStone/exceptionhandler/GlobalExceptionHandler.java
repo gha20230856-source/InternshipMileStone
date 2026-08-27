@@ -31,15 +31,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("bad input to database " + ex.getMessage());
     }
 
-    @ExceptionHandler(HttpServerErrorException.InternalServerError.class)
-    public ResponseEntity<String> unknownError(HttpServerErrorException.InternalServerError ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An Error Occured");
-    }
 
-    @ExceptionHandler(HttpClientErrorException.Forbidden.class)
-    public ResponseEntity<String> accessDenied(HttpClientErrorException.Forbidden ex) {
-        return  ResponseEntity.status(HttpStatus.FORBIDDEN).body("you can't access this resource");
-    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> illegalArgument(IllegalArgumentException ex) {
@@ -50,4 +42,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> illegalState(IllegalStateException ex) {
         return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleUnknown(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
+    }
+
 }
