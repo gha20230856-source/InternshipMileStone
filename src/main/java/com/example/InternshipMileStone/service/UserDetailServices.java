@@ -11,6 +11,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+
+//TODO use yoda code when using  string.equalsignorecase()
 @Service
 @AllArgsConstructor
 public class UserDetailServices implements UserDetailsService {
@@ -22,8 +26,17 @@ public class UserDetailServices implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
 
-        User user =userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+       User user =
+                userRepo.findByUsername(username)
+                .or(() -> userRepo.findByEmail(username))
+                .orElseThrow(() -> new UsernameNotFoundException("user with usernameOrEmail: " + username + " not found"));
 
-        return new UserPrinciple(user,employeeRepo.findByUser(user).orElse(new Employee()).getStatus().equalsIgnoreCase("active"));
+       Employee employee =
+               employeeRepo.findByUser(user)
+               .orElseThrow(()->new UsernameNotFoundException("Employee not found"));
+
+
+       return new UserPrinciple(user, "active".equalsIgnoreCase(employee.getStatus()));
+
     }
 }
