@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
     // Returns HTTP 403 Forbidden
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<String> handleAccessDenied(AccessDeniedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
     // Returns HTTP 404 Not Found

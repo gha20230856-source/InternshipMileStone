@@ -6,6 +6,8 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import java.util.function.Function;
+
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +24,6 @@ public class JWTService {
 
     @Value("${jwt.secret}")
     private  String Secret;
-
-    private String secretKey;
 
     @Value("${jwt.expiration}")
     private Long expiry;
@@ -70,8 +70,11 @@ public class JWTService {
 
 
     public boolean validateToken(String token, UserDetails userDetails) {
-        final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
+
+
+            final String userName = extractUserName(token);
+            return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
+
     }
 
     private boolean isTokenExpired(String token) {
